@@ -1,19 +1,6 @@
 const Tesseract = require('tesseract.js');
 const fs = require('fs');
-
-let totalFile;
-
-// Tesseract.recognize('images/surat1.jpg', { lang: 'ind' })
-//   .progress((p) => {
-//     console.log('progress', p);
-//   })
-//   .catch(err => console.error(err))
-//   .then((result) => {
-//     console.log(result.text);
-//     stream.write(result.text);
-//     stream.end();
-//     process.exit(0);
-//   });
+const natural = require('natural');
 
 
 function readFiles(dirname, onFileContent, onError) {
@@ -32,7 +19,7 @@ function readFiles(dirname, onFileContent, onError) {
           .catch(err => console.error(err))
           .then((result) => {
             console.log(result.text);
-            const stream = fs.createWriteStream(`result/${filename.slice(0, -4)}.txt`);
+            const stream = fs.createWriteStream(`text-result/${filename.slice(0, -4)}.txt`);
             stream.write(result.text);
             console.log(`Total File berhasil di ekstraksi ${i + 1} file`);
           });
@@ -42,4 +29,6 @@ function readFiles(dirname, onFileContent, onError) {
 }
 
 readFiles('images');
+
+const tokenizer = new natural.WordTokenizer();
 
