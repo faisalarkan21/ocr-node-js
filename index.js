@@ -1,34 +1,31 @@
-const Tesseract = require('tesseract.js');
-const fs = require('fs');
 const natural = require('natural');
+const fs = require('fs');
+
+const classifier = new natural.BayesClassifier();
+const OcrRead = require('./src/ocr-scan');
+
+/**
+ * @function
+ * Read OCR from folder images
+ */
+OcrRead('images');
 
 
-function readFiles(dirname, onFileContent, onError) {
-  fs.readdir(dirname, (err, filenames) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
-    filenames.forEach((filename, i) => {
-      fs.readFile(dirname + filename, 'utf-8', (err, content) => {
-        console.log(filename);
-        Tesseract.recognize(`images/${filename}`, { lang: 'ind' })
-          .progress((p) => {
-            console.log('progress', p);
-          })
-          .catch(err => console.error(err))
-          .then((result) => {
-            console.log(result.text);
-            const stream = fs.createWriteStream(`text-result/${filename.slice(0, -4)}.txt`);
-            stream.write(result.text);
-            console.log(`Total File berhasil di ekstraksi ${i + 1} file`);
-          });
-      });
-    });
-  });
-}
+const filename = 'text-result/Contoh Surat Lamaran Kerja Administrasi.txt';
 
-readFiles('images');
+classifier.addDocument('Surat Lamaran Pekerjaan', 'surat-lamaran-pekerjaan');
+classifier.addDocument('ayam', 'buy');
+classifier.addDocument('bayem', 'sell');
+classifier.addDocument('jengkol', 'sell');
 
-const tokenizer = new natural.WordTokenizer();
+classifier.train();
+
+
+(async function classify() {
+  const result = await fs.readFileSync(filename, 'utf8');
+
+
+  console.log(classifier.classify(result));
+  console.log(classifier.getClassifications(result));
+}());
 
