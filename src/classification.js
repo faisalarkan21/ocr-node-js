@@ -1,15 +1,14 @@
 const natural = require('natural');
 const fs = require('fs');
+const keyword = require('./config/classification-key');
 
 
-const classifier = new natural.LogisticRegressionClassifier();
+const classifier = new natural.BayesClassifier();
 
 
-classifier.addDocument('Surat Lamaran Pekerjaan', 'surat-lamaran-pekerjaan');
-classifier.addDocument('penelitian', 'surat-penelitian');
-classifier.addDocument('kerjasama', 'surat-kerja-sama');
-classifier.addDocument('jengkol', 'sell');
-
+classifier.addDocument(keyword.suratLamaran.key, keyword.suratLamaran.value);
+classifier.addDocument(keyword.suratPenelitian.key, keyword.suratPenelitian.value);
+classifier.addDocument(keyword.suratKerjasama.key, keyword.suratKerjasama.value);
 classifier.train();
 
 
